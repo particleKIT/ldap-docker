@@ -19,11 +19,9 @@ RUN echo "" > /etc/openldap/ldap.conf &&\
     mkdir /backup &&\
     ln -s /etc/openldap /config &&\
     ln -s /var/lib/ldap /db &&\
-    ln -s /etc/openldap/ssl /ssl
 
 VOLUME /config
 VOLUME /db
-VOLUME /ssl
 VOLUME /backup
 
 EXPOSE 389
