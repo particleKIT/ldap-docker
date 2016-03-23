@@ -18,7 +18,7 @@ RUN echo "" > /etc/openldap/ldap.conf &&\
     mkdir /etc/openldap/ssl &&\
     mkdir /backup &&\
     ln -s /etc/openldap /config &&\
-    ln -s /var/lib/ldap /db &&\
+    ln -s /var/lib/ldap /db 
 
 VOLUME /config
 VOLUME /db
