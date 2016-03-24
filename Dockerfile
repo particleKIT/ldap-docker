@@ -6,8 +6,6 @@ RUN zypper --gpg-auto-import-keys --non-interactive ref && \
     zypper --gpg-auto-import-keys --non-interactive in -l \
     openldap2 pam_ldap openldap2-client openssl ca-certificates
 
-ADD init.sh /init.sh
-
 # setup a clean ldap environment
 # enforce tls 
 RUN echo "" > /etc/openldap/ldap.conf &&\
@@ -26,6 +24,9 @@ VOLUME /backup
 
 EXPOSE 389
 EXPOSE 636
+
+ADD init.sh /init.sh
+
 
 # ROLE=master/slave
 
