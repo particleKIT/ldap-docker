@@ -9,8 +9,7 @@ RUN zypper --gpg-auto-import-keys --non-interactive ref && \
 # setup a clean ldap environment
 # enforce tls 
 RUN echo "" > /etc/openldap/ldap.conf &&\
-    rm -rf /var/lib/ldap/* /etc/openldap/slapd.d/* &&\
-    install -o ldap -g ldap -d /run/slapd &&\
+    rm -rf /var/lib/ldap/* /etc/openldap/slapd.* &&\
     sed -i 's/^OPENLDAP_START_LDAP=.*$/OPENLDAP_START_LDAP="no"/g' /etc/sysconfig/openldap &&\
     sed -i 's/^OPENLDAP_START_LDAPS=.*$/OPENLDAP_START_LDAPS="yes"/g' /etc/sysconfig/openldap &&\
     mkdir /etc/openldap/ssl &&\
@@ -26,7 +25,6 @@ EXPOSE 389
 EXPOSE 636
 
 ADD init.sh /init.sh
-
 
 # ROLE=master/slave
 
