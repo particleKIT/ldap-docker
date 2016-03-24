@@ -31,7 +31,7 @@ EXPOSE 636
 
 ENV ROLE=master \
     LOGLEVEL=stats \
-    LDAP_BACKUP="/backup/init.ldif"
+    LDAP_BACKUP=""
     
 
 ENTRYPOINT ["/init.sh"]
