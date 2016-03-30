@@ -16,7 +16,7 @@ if [ ! "$(ls -A /config/ssl)" ]; then
 else
     echo "copy public keys to /etc/pki/trust/anchors/ and update trusted certificates"
     cp /config/ssl/*public* /etc/pki/trust/anchors/
-    /usr/sbin/update-ca-certificates -fv
+    /usr/sbin/update-ca-certificates -f -v
 fi
 
 function start_slapd {
