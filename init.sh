@@ -19,15 +19,6 @@ else
     /usr/sbin/update-ca-certificates -f -v
 fi
 
-function start_slapd {
-
-    echo "starting slapd..."
-    chown -R ldap:ldap /var/lib/ldap/
-    chown -R ldap:ldap /etc/openldap/slapd.d
-    /usr/lib/openldap/slapd -f /etc/openldap/slapd.conf -F /etc/openldap/slapd.d -u ldap -g ldap -h ldaps:/// -d "$LOGLEVEL"
-
-}
-
 if [ ! -f "/db/id2entry.bdb" ]; then
     echo "No existing database found."
     if [ "$ROLE" == "master"  ] ; then
@@ -38,7 +29,7 @@ if [ ! -f "/db/id2entry.bdb" ]; then
 
         echo "$LDAP_BACKUP"
         if [ -z "$LDAP_BACKUP" ]; then
-            LDAP_BACKUP="/backup/$(ls /backup -c1|head -1)"
+            LDAP_BACKUP="/backup/$(ls /backup -c1|head -n1)"
         fi
         if [ -f "$LDAP_BACKUP" ]; then
             echo "migrating $LDAP_BACKUP"
@@ -50,4 +41,7 @@ if [ ! -f "/db/id2entry.bdb" ]; then
     fi
 fi
 
-start_slapd
+echo "starting slapd..."
+chown -R ldap:ldap /var/lib/ldap/
+chown -R ldap:ldap /etc/openldap/slapd.d
+/usr/lib/openldap/slapd -f /etc/openldap/slapd.conf -F /etc/openldap/slapd.d -u ldap -g ldap -h ldaps:/// -d "$LOGLEVEL"
