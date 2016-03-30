@@ -29,7 +29,7 @@ if [ ! -f "/db/id2entry.bdb" ]; then
 
         echo "$LDAP_BACKUP"
         if [ -z "$LDAP_BACKUP" ]; then
-            LDAP_BACKUP="/backup/$(ls /backup -c1|head -1)"
+            LDAP_BACKUP="/backup/$(ls /backup -c1|head -n1)"
         fi
         if [ -f "$LDAP_BACKUP" ]; then
             echo "migrating $LDAP_BACKUP"
