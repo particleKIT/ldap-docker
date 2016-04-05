@@ -28,7 +28,7 @@ if [ ! -f "/db/id2entry.bdb" ] || [ -f "$LDAP_BACKUP_FILE" ]; then
         fi
 
         if [ -z "$LDAP_BACKUP_FILE" ]; then
-            LDAP_BACKUP_FILE="/$LDAP_BACKUP_DIR/$(ls /backup -c1|head -n1)"
+            LDAP_BACKUP_FILE="$LDAP_BACKUP_DIR/$(ls /backup -c1|head -n1)"
         fi
         if [ -f "$LDAP_BACKUP_FILE" ]; then
             echo "extracting $LDAP_BACKUP_FILE"
