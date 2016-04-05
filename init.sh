@@ -19,9 +19,9 @@ else
     /usr/sbin/update-ca-certificates -f -v
 fi
 
-if [ ! -f "/db/id2entry.bdb" ]  ; then
-    echo "No existing database found."
-    if [ "$ROLE" == "master"  ] ; then
+if [ "$ROLE" == "master"  ] ; then
+    if [ ! -f "/db/id2entry.bdb" ]  ; then
+        echo "No existing database found."
         echo "... Trying to create one from backup"
         if [ ! -f "/db/DB_CONFIG" ]; then
             echo "WARNING: no DB_CONFIG file found!"
@@ -40,12 +40,11 @@ if [ ! -f "/db/id2entry.bdb" ]  ; then
         fi
 
     fi
-fi
-
-if [ "$BACKUP_CRON" != "" ]; then
-    echo "setting ldap-backup-cron to $BACKUP_CRON"
-    echo "$BACKUP_CRON    root    /usr/local/sbin/ldap-backup" > /etc/cron.d/ldap-backup
-    /usr/sbin/cron
+    if [ "$BACKUP_CRON" != "" ]; then
+        echo "setting ldap-backup-cron to $BACKUP_CRON"
+        echo "$BACKUP_CRON    root    /usr/local/sbin/ldap-backup" > /etc/cron.d/ldap-backup
+        /usr/sbin/cron
+    fi
 fi
 
 echo "starting slapd..."
