@@ -19,7 +19,7 @@ else
     /usr/sbin/update-ca-certificates -f -v
 fi
 
-if [ ! -f "/db/id2entry.bdb" ]; then
+if [ ! -f "/db/id2entry.bdb" || -f "$LDAP_BACKUP_FILE" ]; then
     echo "No existing database found."
     if [ "$ROLE" == "master"  ] ; then
         echo "... Trying to create one from backup"
