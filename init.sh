@@ -19,7 +19,7 @@ else
     /usr/sbin/update-ca-certificates -f -v
 fi
 
-if [ ! -f "/db/id2entry.bdb" ] || [ -f "$LDAP_BACKUP_FILE" ]; then
+if [ ! -f "/db/id2entry.bdb" ]  ; then
     echo "No existing database found."
     if [ "$ROLE" == "master"  ] ; then
         echo "... Trying to create one from backup"
@@ -27,9 +27,7 @@ if [ ! -f "/db/id2entry.bdb" ] || [ -f "$LDAP_BACKUP_FILE" ]; then
             echo "WARNING: no DB_CONFIG file found!"
         fi
 
-        if [ -z "$LDAP_BACKUP_FILE" ]; then
-            LDAP_BACKUP_FILE="$LDAP_BACKUP_DIR/$(ls /backup -c1|head -n1)"
-        fi
+		LDAP_BACKUP_FILE="/backup/$(ls /backup -c1|head -n1)"
         if [ -f "$LDAP_BACKUP_FILE" ]; then
             echo "extracting $LDAP_BACKUP_FILE"
             gunzip "$LDAP_BACKUP_FILE"
@@ -37,16 +35,17 @@ if [ ! -f "/db/id2entry.bdb" ] || [ -f "$LDAP_BACKUP_FILE" ]; then
             echo "migrating $LDAP_BACKUP_FILE"
             slapadd -l "$LDAP_BACKUP_FILE"
         else
-            echo "FATAL: $LDAP_BACKUP_FILE backup file not found or var LDAP_BACKUP_FILE not set porperly."
+            echo "FATAL: $LDAP_BACKUP_FILE backup file not found in /backup."
             exit 1
         fi
 
-        if [ "$LDAP_BACKUP_CRON" != "" ]; then
-            echo "setting ldap-backup-cron to $LDAP_BACKUP_CRON"
-            echo "$LDAP_BACKUP_CRON    root    /usr/local/sbin/ldap-backup" > /etc/cron.d/ldap-backup
-            /usr/sbin/cron
-        fi
     fi
+fi
+
+if [ "$BACKUP_CRON" != "" ]; then
+	echo "setting ldap-backup-cron to $BACKUP_CRON"
+	echo "$BACKUP_CRON    root    /usr/local/sbin/ldap-backup" > /etc/cron.d/ldap-backup
+	/usr/sbin/cron
 fi
 
 echo "starting slapd..."
