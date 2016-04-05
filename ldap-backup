@@ -1,0 +1,6 @@
+#!/bin/bash
+
+FNAMEDATA=ldap-backup-$( date +%y%m%d-%H%M ).ldif
+slapcat -v -l $LDAP_BACKUP_DIR/$FNAMEDATA
+gzip $LDAP_BACKUP_DIR/$FNAMEDATA
+

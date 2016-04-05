@@ -27,16 +27,23 @@ if [ ! -f "/db/id2entry.bdb" ]; then
             echo "WARNING: no DB_CONFIG file found!"
         fi
 
-        echo "$LDAP_BACKUP"
-        if [ -z "$LDAP_BACKUP" ]; then
-            LDAP_BACKUP="/backup/$(ls /backup -c1|head -n1)"
+        if [ -z "$LDAP_BACKUP_FILE" ]; then
+            LDAP_BACKUP_FILE="/$LDAP_BACKUP_DIR/$(ls /backup -c1|head -n1)"
         fi
-        if [ -f "$LDAP_BACKUP" ]; then
-            echo "migrating $LDAP_BACKUP"
-            slapadd -l "$LDAP_BACKUP"
+        if [ -f "$LDAP_BACKUP_FILE" ]; then
+            echo "extracting $LDAP_BACKUP_FILE"
+            gunzip "$LDAP_BACKUP_FILE"
+            echo "migrating $LDAP_BACKUP_FILE"
+            slapadd -l "$LDAP_BACKUP_FILE"
         else
-            echo "FATAL: $LDAP_BACKUP backup file not found or var LDAP_BACKUP not set porperly."
+            echo "FATAL: $LDAP_BACKUP_FILE backup file not found or var LDAP_BACKUP_FILE not set porperly."
             exit 1
+        fi
+
+        if [ "$LDAP_BACKUP_CRON" != ""]; then
+            echo "setting ldap-backup-cron to $LDAP_BACKUP_CRON"
+            echo "$LDAP_BACKUP_CRON    root    /usr/local/sbin/ldap-backup" > /etc/cron.d/ldap-backup
+            /usr/sbin/cron
         fi
     fi
 fi
