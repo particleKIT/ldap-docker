@@ -25,12 +25,14 @@ EXPOSE 389
 EXPOSE 636
 
 ADD init.sh /init.sh
+ADD ldap-backup /usr/local/sbin/ldap-backup
 
 # ROLE=master/slave
 
 ENV ROLE=master \
     LOGLEVEL=stats \
-    LDAP_BACKUP=""
-    
+    LDAP_BACKUP_DIR="/backup"
+    LDAP_BACKUP_FILE=""
+    LDAP_BACKUP_CRON="@hourly"  
 
 ENTRYPOINT ["/init.sh"]
