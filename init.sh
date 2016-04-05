@@ -40,7 +40,7 @@ if [ ! -f "/db/id2entry.bdb" ]; then
             exit 1
         fi
 
-        if [ "$LDAP_BACKUP_CRON" != ""]; then
+        if [ "$LDAP_BACKUP_CRON" != "" ]; then
             echo "setting ldap-backup-cron to $LDAP_BACKUP_CRON"
             echo "$LDAP_BACKUP_CRON    root    /usr/local/sbin/ldap-backup" > /etc/cron.d/ldap-backup
             /usr/sbin/cron
