@@ -4,4 +4,4 @@ cd /backup
 FNAMEDATA=ldap-backup-$( date +%y%m%d-%H%M ).ldif
 /usr/sbin/slapcat -l $FNAMEDATA
 /usr/bin/gzip $FNAMEDATA
-
+find ldap-*.ldif.gz -mtime +7 -delete
