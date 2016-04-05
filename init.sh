@@ -33,6 +33,7 @@ if [ ! -f "/db/id2entry.bdb" ] || [ -f "$LDAP_BACKUP_FILE" ]; then
         if [ -f "$LDAP_BACKUP_FILE" ]; then
             echo "extracting $LDAP_BACKUP_FILE"
             gunzip "$LDAP_BACKUP_FILE"
+            LDAP_BACKUP_FILE="${LDAP_BACKUP_FILE%.gz}"
             echo "migrating $LDAP_BACKUP_FILE"
             slapadd -l "$LDAP_BACKUP_FILE"
         else
