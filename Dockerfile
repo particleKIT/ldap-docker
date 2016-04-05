@@ -4,7 +4,7 @@ MAINTAINER TTP/ITP <admin@particle.kit.edu>
 RUN zypper --gpg-auto-import-keys --non-interactive ref && \
     zypper --gpg-auto-import-keys --non-interactive up && \
     zypper --gpg-auto-import-keys --non-interactive in -l \
-    openldap2 pam_ldap openldap2-client openssl ca-certificates
+    openldap2 pam_ldap openldap2-client openssl ca-certificates cron
 
 # setup a clean ldap environment
 # enforce tls 
