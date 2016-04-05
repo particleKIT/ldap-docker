@@ -2,6 +2,6 @@
 
 cd /backup
 FNAMEDATA=ldap-backup-$( date +%y%m%d-%H%M ).ldif
-slapcat -v -l $FNAMEDATA
+slapcat -l $FNAMEDATA
 gzip $FNAMEDATA
 
