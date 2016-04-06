@@ -17,6 +17,9 @@ RUN echo "" > /etc/openldap/ldap.conf &&\
     ln -s /etc/openldap /config &&\
     ln -s /var/lib/ldap /db 
 
+# set timezone
+RUN ln -sf /usr/share/zoneinfo/Europe/Berlin /etc/localtime
+
 VOLUME /config
 VOLUME /db
 VOLUME /backup
@@ -29,8 +32,7 @@ ADD ldap-backup /usr/local/sbin/ldap-backup
 
 # ROLE=master/slave
 
-ENV TZ=Europe/Berlin \
-    ROLE=master \
+ENV ROLE=master \
     LOGLEVEL=stats \
     BACKUP_CRON="@hourly"
 

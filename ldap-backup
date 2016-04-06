@@ -1,6 +1,5 @@
 #!/bin/bash
 
-export TZ='Europe/Berlin'
 cd /backup
 FNAMEDATA=ldap-backup-$( date +%y%m%d-%H%M ).ldif
 /usr/sbin/slapcat -l $FNAMEDATA
