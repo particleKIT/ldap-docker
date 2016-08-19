@@ -5,7 +5,6 @@ build:
     - docker rm -f master || true
     - docker rm -f slave || true
     - docker rm -f client || true
-  ci:
     - rm -rf "$SHIPPABLE_BUILD_DIR"/tests/slapd.master
     - rm -rf "$SHIPPABLE_BUILD_DIR"/tests/slapd.slave
     - mkdir "$SHIPPABLE_BUILD_DIR"/tests/slapd.master
@@ -35,6 +34,7 @@ build:
       -v "$SHIPPABLE_BUILD_DIR"/tests/ldap.conf:/etc/openldap/ldap.conf 
       --link master --link slave 
       particlekit/ldap-client sleep infinity;
+  ci:
     - docker exec client ./init-ldap.sh
     - docker exec client ldapsearch -H ldaps://master -x -b "dc=ldaptest"
     - docker exec client ldapsearch -H ldaps://slave -x -b "dc=ldaptest"
