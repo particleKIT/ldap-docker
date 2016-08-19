@@ -6,33 +6,33 @@ build:
     - docker rm -f slave || true
     - docker rm -f client || true
   ci:
-    - rm -rf "$PWD"/tests/slapd.master
-    - rm -rf "$PWD"/tests/slapd.slave
-    - mkdir "$PWD"/tests/slapd.master
-    - mkdir "$PWD"/tests/slapd.slave
-    - chown 76:70 "$PWD"/tests/ssl/*private*
-    - chmod 'og=-rwx' "$PWD"/tests/ssl/*private*
+    - rm -rf "$SHIPPABLE_BUILD_DIR"/tests/slapd.master
+    - rm -rf "$SHIPPABLE_BUILD_DIR"/tests/slapd.slave
+    - mkdir "$SHIPPABLE_BUILD_DIR"/tests/slapd.master
+    - mkdir "$SHIPPABLE_BUILD_DIR"/tests/slapd.slave
+    - chown 76:70 "$SHIPPABLE_BUILD_DIR"/tests/ssl/*private*
+    - chmod 'og=-rwx' "$SHIPPABLE_BUILD_DIR"/tests/ssl/*private*
     - > 
       docker run -d --hostname master -e ROLE=master 
-      -v "$PWD"/tests/master/slapd.conf:/config/slapd.conf 
-      -v "$PWD"/tests/ldap.conf:/config/ldap.conf 
-      -v "$PWD"/tests/backup.ldif:/backup/backup.ldif 
-      -v "$PWD"/tests/ssl:/config/ssl 
-      -v "$PWD"/tests/slapd.master:/etc/openldap/slapd.d  
+      -v "$SHIPPABLE_BUILD_DIR"/tests/master/slapd.conf:/config/slapd.conf 
+      -v "$SHIPPABLE_BUILD_DIR"/tests/ldap.conf:/config/ldap.conf 
+      -v "$SHIPPABLE_BUILD_DIR"/tests/backup.ldif:/backup/backup.ldif 
+      -v "$SHIPPABLE_BUILD_DIR"/tests/ssl:/config/ssl 
+      -v "$SHIPPABLE_BUILD_DIR"/tests/slapd.master:/etc/openldap/slapd.d  
       --name=master test/ldap:latest;
     - >
       docker run -d --hostname slave -e ROLE=slave 
-      -v "$PWD"/tests/slave/slapd.conf:/config/slapd.conf 
-      -v "$PWD"/tests/ldap.conf:/config/ldap.conf 
-      -v "$PWD"/tests/ssl:/config/ssl 
-      -v "$PWD"/tests/slapd.slave:/etc/openldap/slapd.d  
+      -v "$SHIPPABLE_BUILD_DIR"/tests/slave/slapd.conf:/config/slapd.conf 
+      -v "$SHIPPABLE_BUILD_DIR"/tests/ldap.conf:/config/ldap.conf 
+      -v "$SHIPPABLE_BUILD_DIR"/tests/ssl:/config/ssl 
+      -v "$SHIPPABLE_BUILD_DIR"/tests/slapd.slave:/etc/openldap/slapd.d  
       --name=slave --link master test/ldap:latest;
     - >
       docker run -d --name client 
       -e LDAP_HOST="master slave" 
       -e LDAP_BASE="dc=ldaptest" 
-      -v "$PWD"/tests/ssl:/ssl 
-      -v "$PWD"/tests/ldap.conf:/etc/openldap/ldap.conf 
+      -v "$SHIPPABLE_BUILD_DIR"/tests/ssl:/ssl 
+      -v "$SHIPPABLE_BUILD_DIR"/tests/ldap.conf:/etc/openldap/ldap.conf 
       --link master --link slave 
       particlekit/ldap-client sleep infinity;
     - docker exec client ./init-ldap.sh
