@@ -1,0 +1,42 @@
+build:
+  pre_ci:
+    - docker build -t test/ldap:latest .
+    - docker pull particlekit/ldap-client
+    - docker rm -f master || true
+    - docker rm -f slave || true
+    - docker rm -f client || true
+  ci:
+    - rm -rf "$PWD"/tests/slapd.master
+    - rm -rf "$PWD"/tests/slapd.slave
+    - mkdir "$PWD"/tests/slapd.master
+    - mkdir "$PWD"/tests/slapd.slave
+    - chown 76:70 "$PWD"/tests/ssl/*private*
+    - chmod 'og=-rwx' "$PWD"/tests/ssl/*private*
+    - > 
+      docker run -d --hostname master -e ROLE=master 
+      -v "$PWD"/tests/master/slapd.conf:/config/slapd.conf 
+      -v "$PWD"/tests/ldap.conf:/config/ldap.conf 
+      -v "$PWD"/tests/backup.ldif:/backup/backup.ldif 
+      -v "$PWD"/tests/ssl:/config/ssl 
+      -v "$PWD"/tests/slapd.master:/etc/openldap/slapd.d  
+      --name=master test/ldap:latest;
+    - >
+      docker run -d --hostname slave -e ROLE=slave 
+      -v "$PWD"/tests/slave/slapd.conf:/config/slapd.conf 
+      -v "$PWD"/tests/ldap.conf:/config/ldap.conf 
+      -v "$PWD"/tests/ssl:/config/ssl 
+      -v "$PWD"/tests/slapd.slave:/etc/openldap/slapd.d  
+      --name=slave --link master test/ldap:latest;
+    - >
+      docker run -d --name client 
+      -e LDAP_HOST="master slave" 
+      -e LDAP_BASE="dc=ldaptest" 
+      -v "$PWD"/tests/ssl:/ssl 
+      -v "$PWD"/tests/ldap.conf:/etc/openldap/ldap.conf 
+      --link master --link slave 
+      particlekit/ldap-client sleep infinity;
+    - docker exec client ./init-ldap.sh
+    - docker exec client ldapsearch -H ldaps://master -x -b "dc=ldaptest"
+    - docker exec client ldapsearch -H ldaps://slave -x -b "dc=ldaptest"
+    - docker logs master
+    - docker logs slave

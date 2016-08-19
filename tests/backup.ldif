@@ -1,0 +1,82 @@
+dn: dc=ldaptest
+objectClass: dcObject
+objectClass: organization
+dc: ldaptest
+o: ldaptest
+structuralObjectClass: organization
+
+dn: ou=People,dc=ldaptest
+objectClass: organizationalUnit
+objectClass: top
+ou: People
+structuralObjectClass: organizationalUnit
+
+dn: ou=Group,dc=ldaptest
+objectClass: organizationalUnit
+objectClass: top
+ou: Group
+structuralObjectClass: organizationalUnit
+
+dn: cn=ldapadmin,dc=ldaptest
+cn: ldapadmin
+givenName: LDAP
+sn: Admin
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+objectClass: top
+userPassword: ldaptesting
+structuralObjectClass: inetOrgPerson
+
+dn: cn=ldapsync,dc=ldaptest
+cn: ldapsync
+givenName: LDAP
+sn: LDAPSYNC
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+objectClass: top
+userPassword: ldaptesting
+structuralObjectClass: inetOrgPerson
+
+dn: cn=usrs,ou=Group,dc=ldaptest
+objectClass: groupOfNames
+objectClass: posixGroup
+objectClass: top
+cn: usrs
+userPassword:: e2NyeXB0fSo=
+gidNumber: 10000
+structuralObjectClass: groupOfNames
+member: uid=testuser1,ou=People,dc=ldaptest
+member: uid=testuser2,ou=People,dc=ldaptest
+
+dn: uid=testuser1,ou=people,dc=ldaptest
+uid: testuser1
+cn: test user
+givenname: test
+sn: user
+objectclass: person
+objectclass: organizationalperson
+objectclass: inetorgperson
+objectclass: top
+loginshell: /bin/bash
+uidnumber: 10001
+gidnumber: 10000
+userpassword: ldaptesting
+
+dn: uid=testuser2,ou=people,dc=ldaptest
+uid: testuser2
+cn: test user
+givenname: test
+sn: user
+objectclass: person
+objectclass: organizationalperson
+objectclass: inetorgperson
+objectclass: top
+loginshell: /bin/bash
+uidnumber: 10002
+gidnumber: 10000
+userpassword: ldaptesting
+
+
+
