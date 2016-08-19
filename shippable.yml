@@ -3,38 +3,44 @@ build:
     - docker build -t test/ldap:latest .
     - docker pull particlekit/ldap-client
     - docker rm -f master || true
+    - docker rm -f master_data || true
     - docker rm -f slave || true
+    - docker rm -f slave_data || true
     - docker rm -f client || true
-    - rm -rf "$SHIPPABLE_BUILD_DIR"/tests/slapd.master
-    - rm -rf "$SHIPPABLE_BUILD_DIR"/tests/slapd.slave
-    - mkdir "$SHIPPABLE_BUILD_DIR"/tests/slapd.master
-    - mkdir "$SHIPPABLE_BUILD_DIR"/tests/slapd.slave
-    - chown 76:70 "$SHIPPABLE_BUILD_DIR"/tests/ssl/*private*
+  ci:
+    - mkdir -p "$SHIPPABLE_BUILD_DIR"/tests/slapd.d
     - chmod 'og=-rwx' "$SHIPPABLE_BUILD_DIR"/tests/ssl/*private*
+
+    - docker run -i --name=master_data -d test/ldap:latest bash
+    - docker cp "$SHIPPABLE_BUILD_DIR"/tests/master/slapd.conf master_data:/config/slapd.conf
+    - docker cp "$SHIPPABLE_BUILD_DIR"/tests/ldap.conf master_data:/config/ldap.conf 
+    - docker cp "$SHIPPABLE_BUILD_DIR"/tests/backup.ldif master_data:/backup/backup.ldif 
+    - docker cp "$SHIPPABLE_BUILD_DIR"/tests/ssl master_data:/config/
+    - docker exec master_data chown 76:70 /config/ssl/master-private.pem
+    - docker exec master_data chown 76:70 /config/ssl/slave-private.pem
+    - docker cp "$SHIPPABLE_BUILD_DIR"/tests/slapd.d master_data:/etc/openldap/
     - > 
       docker run -d --hostname master -e ROLE=master 
-      -v "$SHIPPABLE_BUILD_DIR"/tests/master/slapd.conf:/config/slapd.conf 
-      -v "$SHIPPABLE_BUILD_DIR"/tests/ldap.conf:/config/ldap.conf 
-      -v "$SHIPPABLE_BUILD_DIR"/tests/backup.ldif:/backup/backup.ldif 
-      -v "$SHIPPABLE_BUILD_DIR"/tests/ssl:/config/ssl 
-      -v "$SHIPPABLE_BUILD_DIR"/tests/slapd.master:/etc/openldap/slapd.d  
-      --name=master test/ldap:latest;
+      --volumes-from master_data --name=master test/ldap:latest;
+
+    - docker run -i --name=slave_data -d test/ldap:latest bash
+    - docker cp "$SHIPPABLE_BUILD_DIR"/tests/slave/slapd.conf slave_data:/config/slapd.conf 
+    - docker cp "$SHIPPABLE_BUILD_DIR"/tests/ldap.conf slave_data:/config/ldap.conf 
+    - docker cp "$SHIPPABLE_BUILD_DIR"/tests/ssl slave_data:/config/
+    - docker exec slave_data chown 76:70 /config/ssl/master-private.pem
+    - docker exec slave_data chown 76:70 /config/ssl/slave-private.pem
+    - docker cp "$SHIPPABLE_BUILD_DIR"/tests/slapd.d slave_data:/etc/openldap/
     - >
       docker run -d --hostname slave -e ROLE=slave 
-      -v "$SHIPPABLE_BUILD_DIR"/tests/slave/slapd.conf:/config/slapd.conf 
-      -v "$SHIPPABLE_BUILD_DIR"/tests/ldap.conf:/config/ldap.conf 
-      -v "$SHIPPABLE_BUILD_DIR"/tests/ssl:/config/ssl 
-      -v "$SHIPPABLE_BUILD_DIR"/tests/slapd.slave:/etc/openldap/slapd.d  
-      --name=slave --link master test/ldap:latest;
+      --volumes-from slave_data --name=slave --link master test/ldap:latest;
+
     - >
       docker run -d --name client 
-      -e LDAP_HOST="master slave" 
-      -e LDAP_BASE="dc=ldaptest" 
-      -v "$SHIPPABLE_BUILD_DIR"/tests/ssl:/ssl 
-      -v "$SHIPPABLE_BUILD_DIR"/tests/ldap.conf:/etc/openldap/ldap.conf 
-      --link master --link slave 
-      particlekit/ldap-client sleep infinity;
-  ci:
+      -e LDAP_HOST="master slave" -e LDAP_BASE="dc=ldaptest" 
+      --link master --link slave particlekit/ldap-client sleep infinity;
+    - docker cp "$SHIPPABLE_BUILD_DIR"/tests/ldap.conf client:/etc/openldap/ldap.conf 
+    - docker cp "$SHIPPABLE_BUILD_DIR"/tests/ssl client:/ 
+
     - docker exec client ./init-ldap.sh
     - docker exec client ldapsearch -H ldaps://master -x -b "dc=ldaptest"
     - docker exec client ldapsearch -H ldaps://slave -x -b "dc=ldaptest"
