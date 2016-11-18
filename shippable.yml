@@ -30,10 +30,13 @@ build:
     - docker exec slave_data chown 76:70 /config/ssl/master-private.pem
     - docker exec slave_data chown 76:70 /config/ssl/slave-private.pem
     - docker cp "$SHIPPABLE_BUILD_DIR"/tests/slapd.d slave_data:/etc/openldap/
+    - sleep 3
+    - docker logs master
     - >
       docker run -d --hostname slave -e ROLE=slave 
       --volumes-from slave_data --name=slave --link master test/ldap:latest;
-
+    - sleep 3
+    - docker logs slave
     - >
       docker run -d --name client 
       -e LDAP_HOST="master slave" -e LDAP_BASE="dc=ldaptest" 
@@ -46,3 +49,4 @@ build:
     - docker exec client ldapsearch -H ldaps://slave -x -b "dc=ldaptest"
     - docker logs master
     - docker logs slave
+    - docker logs client
