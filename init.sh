@@ -20,7 +20,7 @@ else
 fi
 
 if [ "$ROLE" == "master"  ] ; then
-    if [ ! -f "/db/id2entry.bdb" ]  ; then
+    if [ ! -f "/db/data.mdb" ]  ; then
         echo "No existing database found."
         echo "... Trying to create one from backup"
         if [ ! -f "/db/DB_CONFIG" ]; then
