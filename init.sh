@@ -50,4 +50,4 @@ fi
 echo "starting slapd..."
 chown -R ldap:ldap /var/lib/ldap/
 chown -R ldap:ldap /etc/openldap/slapd.d
-/usr/lib/openldap/slapd -f /etc/openldap/slapd.conf -F /etc/openldap/slapd.d -u ldap -g ldap -h ldaps:/// -d "$LOGLEVEL"
+/usr/sbin/slapd -f /etc/openldap/slapd.conf -F /etc/openldap/slapd.d -u ldap -g ldap -h ldaps:/// -d "$LOGLEVEL"
