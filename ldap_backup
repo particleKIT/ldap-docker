@@ -1,7 +1,9 @@
 #!/bin/bash
-
-cd /backup
-FNAMEDATA=ldap-backup-$( date +%y%m%d-%H%M ).ldif
-/usr/sbin/slapcat -l $FNAMEDATA
-/usr/bin/gzip $FNAMEDATA
-find ldap-*.ldif.gz -mtime +7 -delete
+while true; do
+    cd /backup
+    FNAMEDATA=ldap-backup-$( date +%y%m%d-%H%M ).ldif
+    /usr/sbin/slapcat -l $FNAMEDATA
+    /usr/bin/gzip $FNAMEDATA
+    find ldap-*.ldif.gz -mtime +7 -delete
+    sleep $1
+done

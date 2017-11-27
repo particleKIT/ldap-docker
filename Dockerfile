@@ -4,7 +4,7 @@ MAINTAINER TTP/ITP <admin@particle.kit.edu>
 RUN zypper --gpg-auto-import-keys --non-interactive ref && \
     zypper --gpg-auto-import-keys --non-interactive up && \
     zypper --gpg-auto-import-keys --non-interactive in -l \
-    openldap2 pam_ldap openldap2-client openssl ca-certificates cron timezone
+    openldap2 pam_ldap openldap2-client openssl ca-certificates timezone
 
 # setup a clean ldap environment
 # enforce tls 
@@ -34,6 +34,6 @@ ADD ldap_backup /usr/local/sbin/ldap_backup
 
 ENV ROLE=master \
     LOGLEVEL=stats \
-    BACKUP_CRON="@hourly"
+    BACKUP_CRON="3600"
 
 ENTRYPOINT ["/init.sh"]
