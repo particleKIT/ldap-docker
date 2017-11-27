@@ -42,7 +42,7 @@ if [ "$ROLE" == "master"  ] ; then
     fi
     if [ "$BACKUP_CRON" != "" ]; then
         echo "setting ldap-backup-cron to $BACKUP_CRON"
-        echo "$BACKUP_CRON    root    /usr/local/sbin/ldap_backup" > /etc/cron.d/ldap_backup
+        echo -e "$BACKUP_CRON    root    /usr/local/sbin/ldap_backup\n" > /etc/cron.d/ldap_backup
         /usr/sbin/cron
     fi
 fi
