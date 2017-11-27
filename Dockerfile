@@ -28,7 +28,7 @@ EXPOSE 389
 EXPOSE 636
 
 ADD init.sh /init.sh
-ADD ldap-backup /usr/local/sbin/ldap-backup
+ADD ldap_backup /usr/local/sbin/ldap_backup
 
 # ROLE=master/slave
 
