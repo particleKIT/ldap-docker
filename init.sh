@@ -42,7 +42,7 @@ if [ "$ROLE" == "master"  ] ; then
     fi
     if [ "$BACKUP_CRON" -gt 0 ]; then
         echo "running ldap-backup every $BACKUP_CRON seconds"
-        /usr/local/sbin/ldap_backup  $BACKUP_CRON &> /var/log/ldap_backup.log &
+        /usr/local/sbin/ldap_backup $BACKUP_CRON &> /var/log/ldap_backup.log &
     fi
 fi
 
